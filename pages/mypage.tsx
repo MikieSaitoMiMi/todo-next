@@ -1,3 +1,4 @@
+import { Container, Typography } from '@mui/material'
 import React from 'react'
 
 //フッターメニュー（ユーザー・TODO）、ユーザー情報
@@ -7,7 +8,14 @@ import React from 'react'
 
 const mypage = () => {
   return (
-    <div>mypage</div>
+    <Container maxWidth="md" sx={{ pt: 5 }} >
+      <Typography
+        component="h4" 
+        variant="h4" 
+      >
+        My Page
+      </Typography>
+    </Container>
   )
 }
 
