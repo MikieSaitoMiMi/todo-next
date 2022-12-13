@@ -5,13 +5,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Image from 'next/image';
 import imageSrc from '.././img/logo.png';
-import { createMuiTheme } from '@mui/material/styles';
+import { createMuiTheme, createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/system';
 
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
+    margin: '100px',
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -21,13 +22,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: "#57D1C9"
     }
   },
 });
+
 
 const Header = () => {
   const classes = useStyles();
