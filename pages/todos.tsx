@@ -1,7 +1,9 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid'
 import React from 'react'
-import Header from '../Components/parts/Header';
+import { useRecoilValue } from 'recoil';
+import Header from '../Components/Header';
+import { todoListState } from '../Components/store/parts/TodoList';
 
 
 //Todo:ソート、フィルター TODO作成ボタン、Todo一覧（タイトル・ステータス）
@@ -23,7 +25,8 @@ const dummy = [
   createData('dummyのtodoです', 'このtodoはdummyです', '未完了' ),
 ];
 
-const todos = () => {
+const TodosPage = () => {
+  const todoList = useRecoilValue(todoListState);
   return (
     <>
       <Header />
@@ -37,9 +40,9 @@ const todos = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {dummy.map((todo) => (
-              <TableRow key={todo.date}>
-                <TableCell>{todo.date}</TableCell>
+            {todoList.map((todo) => (
+              <TableRow key={todo.id}>
+                <TableCell>{todo.title}</TableCell>
                 <TableCell>{todo.detail}</TableCell>
                 <TableCell>{todo.status}</TableCell>
               </TableRow>
@@ -51,4 +54,4 @@ const todos = () => {
   )
 }
 
-export default todos
+export default TodosPage

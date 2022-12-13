@@ -1,7 +1,7 @@
 import { Box, Button, Container, InputLabel, MenuItem, Select, TextareaAutosize, TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
 import React from 'react'
-import Header from '../../Components/parts/Header'
+import Header from '../../Components/Header'
 
 //Todoフォーム（タイトル・内容・ステータス）、作成ボタン
 //機能→Todoタイトル候補（？）、Todo作成

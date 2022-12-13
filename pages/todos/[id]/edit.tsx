@@ -1,6 +1,6 @@
 import { Box, Button, Container, InputLabel, MenuItem, Select, Stack, TextareaAutosize, TextField, Typography } from '@mui/material'
 import React from 'react'
-import Header from '../../../Components/parts/Header'
+import Header from '../../../Components/Header'
 
 //Todoフォーム（タイトル・期限・ステータス）、保存ボタン
 //Todo編集

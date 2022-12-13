@@ -4,8 +4,8 @@ import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Image from 'next/image';
-import imageSrc from '.././img/logo.png';
-import { createMuiTheme, createTheme } from '@mui/material/styles';
+import imageSrc from '../img/logo.png';
+import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/system';
 
