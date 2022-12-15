@@ -1,5 +1,7 @@
 import { Box, Button, Container, InputLabel, MenuItem, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextareaAutosize, TextField, Typography } from '@mui/material'
 import { Stack } from '@mui/system'
+import NextLink from 'next/link';
+import MuiLink from "@mui/material/Link"
 import React, { useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import Header from '../../Components/Header'
@@ -19,7 +21,7 @@ const Create = () => {
     setTodoList((todo) => [
       ...todo,
       {
-        id: todo.length + 1 ,
+        id: todo.length,
         title: todoTitle,
         detail: todoDetail,
         status: todoStatus,
@@ -116,16 +118,31 @@ const Create = () => {
             完了
           </MenuItem>
         </Select>
-        <Button 
-          color="primary" 
-          variant="contained" 
-          size="large"
-          onClick={(e)=>{
-            addTodo();
-          }}
+      <NextLink href="/todos" >
+        <MuiLink
+          underline='none'
         >
-          作成
-        </Button>
+          <Button 
+            color="primary" 
+            variant="contained" 
+            size="large"
+            onClick={(e)=>{
+              addTodo();
+            }}
+          >
+            作成
+          </Button>
+        </MuiLink>
+      </NextLink>
+      <NextLink href="/todos">
+        <MuiLink
+          underline='none'
+        >
+          <Button variant="contained">
+            戻る
+          </Button>
+        </MuiLink>
+      </NextLink>
       </Stack>
     </Container>
   )

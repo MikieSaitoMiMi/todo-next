@@ -1,5 +1,8 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
+import { Box } from '@mui/system';
 import { DataGrid } from '@mui/x-data-grid'
+import NextLink from 'next/link';
+import MuiLink from "@mui/material/Link"
 import React from 'react'
 import { useRecoilValue } from 'recoil';
 import Header from '../Components/Header';
@@ -21,6 +24,7 @@ const TodosPage = () => {
         <Table>
           <TableHead>
             <TableRow>
+              <TableCell>ID</TableCell>
               <TableCell>タイトル</TableCell>
               <TableCell>内容</TableCell>
               <TableCell>ステータス</TableCell>
@@ -29,6 +33,7 @@ const TodosPage = () => {
           <TableBody>
             {todoList.map((todo) => (
               <TableRow key={todo.id}>
+                <TableCell>{todo.id}</TableCell>
                 <TableCell>{todo.title}</TableCell>
                 <TableCell>{todo.detail}</TableCell>
                 <TableCell>{todo.status}</TableCell>
@@ -36,6 +41,17 @@ const TodosPage = () => {
             ))}
           </TableBody>
         </Table>
+      <NextLink href="/todos/create">
+        <MuiLink
+          underline='none'
+        >
+          <Button variant="contained">
+            <Box>
+              新規Todo作成
+            </Box>
+          </Button>
+        </MuiLink>
+      </NextLink>
       </TableContainer>
     </>
   )

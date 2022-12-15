@@ -12,9 +12,9 @@ export const todoListState = atom<ItodoListState[]>({
   default: [
     {
       id: 0,
-      title: 'dummy',
-      detail: 'dummy',
-      status: '未完了',
+      title: 'Todoのタイトル',
+      detail: 'Todoの詳細',
+      status: 'TodoのStatus',
     }
   ]
 });
