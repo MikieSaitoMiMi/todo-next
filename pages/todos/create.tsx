@@ -5,13 +5,8 @@ import { useRecoilState, useRecoilValue } from 'recoil'
 import Header from '../../Components/Header'
 import { todoListState } from '../../Components/store/Atom'
 
-//Todoフォーム（タイトル・内容・ステータス）、作成ボタン　完了
-//機能→Todoタイトル候補（？）、Todo作成　タイトル候補以外完了
+
 //ログインユーザーのみ　未完了
-
-type Atoms = {
-
-}
 
 const Create = () => {
   const [todoTitle, setTodoTitle] = useState('');
@@ -47,15 +42,47 @@ const Create = () => {
         </Typography>
       </Box>
       <Stack spacing={1}>
+      <InputLabel id="sample">Todo</InputLabel>
+      <Select
+          labelId="candidate"
+          label="sample"
+          value={todoTitle}
+          onChange={(e) => {
+            setTodoTitle(e.target.value);
+          }}
+        >
+          <MenuItem 
+            value={'買い物'}
+          >
+            買い物
+          </MenuItem>
+          <MenuItem
+            value={'勉強'}
+          >
+            勉強
+          </MenuItem>
+          <MenuItem
+            value={'家事'}
+          >
+            家事
+          </MenuItem>
+          <MenuItem
+            value={'休暇'}
+          >
+            休暇
+          </MenuItem>
+        </Select>
+      <InputLabel id="sample"></InputLabel>
         <TextField
           minRows={1}
-          label="タイトル" 
+          label="候補に無いTodoはこちらにじかに入力してください" 
           type="text"
           value={todoTitle}
           onChange={(e) => {
             setTodoTitle(e.target.value);
           }}
         />
+      <InputLabel id="sample">Detail</InputLabel>
         <TextareaAutosize
           minRows={10}
           placeholder="内容"

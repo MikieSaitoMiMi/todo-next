@@ -21,7 +21,7 @@ const TodosPage = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>データ</TableCell>
+              <TableCell>タイトル</TableCell>
               <TableCell>内容</TableCell>
               <TableCell>ステータス</TableCell>
             </TableRow>
