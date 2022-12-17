@@ -45,10 +45,7 @@ const TodosPage = () => {
         <MuiLink
           underline='none'
         >
-          <Button 
-            variant="contained"
-            
-          >
+          <Button variant="contained">
             <Box>
               新規Todo作成
             </Box>

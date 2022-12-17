@@ -6,7 +6,7 @@ import Header from '../../../Components/Header'
 //Todo編集
 //ログインユーザーのみ
 
-const TodoEdit = () => {
+const edit = () => {
   return (
     <Container maxWidth="md" sx={{ pt: 5 }} >
       <Header />
@@ -43,4 +43,4 @@ const TodoEdit = () => {
   )
 }
 
-export default TodoEdit
+export default edit

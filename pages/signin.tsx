@@ -1,4 +1,3 @@
-import { Box, Button, Container, Stack, TextareaAutosize, TextField, } from '@mui/material'
 import React from 'react'
 
 //サービス名/ロゴ（フリーサイトから引っ張ってくる）、
@@ -7,34 +6,10 @@ import React from 'react'
 //データ→ユーザーID PW
 //非ログインユーザーのみ
 
-const SignIn = () => {
+const signin = () => {
   return (
-    <Container maxWidth="md" sx={{ pt: 5 }} >
-    <Box marginTop="35px">
-      <Box
-        component="h1" 
-        display='flex'
-        
-      >
-        Todo Web
-      </Box>
-    </Box>
-    <Stack spacing={1}>
-      <TextField
-        minRows={1}
-        label="ID"
-        type="text"
-      />
-      <TextField
-        minRows={1}
-        label="Password"
-        type="password"
-      />
-      
-      <Button color="primary" variant="contained" size="large">保存</Button>
-    </Stack>
-  </Container>
+    <div>signin</div>
   )
 }
 
-export default SignIn
+export default signin
