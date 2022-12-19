@@ -2,7 +2,7 @@ import { Box, Button, Container, InputLabel, MenuItem, Select, Table, TableBody,
 import { Stack } from '@mui/system'
 import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import Header from '../../Components/Header'
 import { todoListState } from '../../Components/store/Atom'
@@ -15,21 +15,40 @@ const Create = () => {
   const [todoDetail, setTodoDetail] = useState('');
   const [todoStatus, setTodoStatus] = useState('未完了' || '途中' || '完了');
 
+  const [emptyErrFlg, setEmptyErrFlg] = useState(false);
+
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
+
+  useEffect(() => {
+    if(todoTitle === '' && todoDetail === ''){
+      //タイトルと内容どちらにも入力がない場合はエラー
+      setEmptyErrFlg(true);
+    }else {
+      setEmptyErrFlg(false);
+    }
+  }, [emptyErrFlg, todoDetail, todoTitle])
+
   const addTodo = () => {
-    setTodoList((todo) => [
-      ...todo,
-      {
-        id: todo.length,
-        title: todoTitle,
-        detail: todoDetail,
-        status: todoStatus,
-      },
-    ]);
-    setTodoTitle('');
-    setTodoDetail('');
-    setTodoStatus('');
+    if(emptyErrFlg !== true){
+      setTodoList((todo) => [
+        ...todo,
+        {
+          id: todo.length,
+          title: todoTitle,
+          detail: todoDetail,
+          status: todoStatus,
+        },
+      ]);
+      //入力がない場合は初期化処理は不要なので省く
+      if(todoTitle !== ''){
+        setTodoTitle('');
+      }
+      if(todoDetail !== ''){
+        setTodoDetail('');
+      }
+      setTodoStatus('');
+    }
   };
 
   return (
@@ -75,24 +94,63 @@ const Create = () => {
           </MenuItem>
         </Select>
       <InputLabel id="sample"></InputLabel>
-        <TextField
+        {emptyErrFlg ?
+          <TextField
           minRows={1}
-          label="候補に無いTodoはこちらにじかに入力してください" 
+          placeholder="候補に無いTodoはこちらにじかに入力してください" 
           type="text"
           value={todoTitle}
+          inputProps={{ maxLength:50 }}
+          error
+          helperText='タイトルか内容の入力は必須です'
           onChange={(e) => {
             setTodoTitle(e.target.value);
           }}
         />
+        :
+          <TextField
+          minRows={1}
+          label="候補に無いTodoはこちらにじかに入力してください" 
+          type="text"
+          value={todoTitle}
+          inputProps={{ maxLength:50 }}
+          onChange={(e) => {
+            setTodoTitle(e.target.value);
+          }}
+        />
+      }
+
       <InputLabel id="sample">Detail</InputLabel>
-        <TextareaAutosize
-          minRows={10}
+      {emptyErrFlg ? 
+      <TextField
+        rows={2}
+        maxRows={2}
+        multiline
+        placeholder="内容"
+        value={todoDetail}
+        inputMode='text'
+        inputProps={{ maxLength:100 }}
+        onChange={(e) => {
+          setTodoDetail(e.target.value);
+        }}
+        error
+        helperText='タイトルか内容の入力は必須です'
+      />
+      :
+        <TextField
+          rows={2}
+          maxRows={2}
+          multiline
           placeholder="内容"
           value={todoDetail}
+          inputMode='text'
+          inputProps={{ maxLength:100 }}
           onChange={(e) => {
             setTodoDetail(e.target.value);
           }}
         />
+      }
+        
         <InputLabel id="status">Status</InputLabel>
         <Select
           labelId="status"
@@ -118,27 +176,43 @@ const Create = () => {
             完了
           </MenuItem>
         </Select>
-      <NextLink href="/todos" >
-        <MuiLink
-          underline='none'
-        >
+        {emptyErrFlg ?
           <Button 
             color="primary" 
             variant="contained" 
             size="large"
+            fullWidth
+            disabled={emptyErrFlg}
             onClick={(e)=>{
               addTodo();
             }}
           >
             作成
           </Button>
-        </MuiLink>
-      </NextLink>
+          :
+            <NextLink href="/todos" >
+              <MuiLink
+                underline='none'
+              >
+                <Button 
+                  color="primary" 
+                  variant="contained" 
+                  size="large"
+                  fullWidth
+                  onClick={(e)=>{
+                    addTodo();
+                  }}
+                >
+                  作成
+                </Button>
+              </MuiLink>
+          </NextLink>
+        }
       <NextLink href="/todos">
         <MuiLink
           underline='none'
         >
-          <Button variant="contained">
+          <Button variant="contained" fullWidth>
             戻る
           </Button>
         </MuiLink>
