@@ -50,7 +50,6 @@ const Header = () => {
           </Toolbar>
         </AppBar>
       </ThemeProvider>
-
     </div>
   );
 }
