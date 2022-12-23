@@ -4,19 +4,16 @@ import imageSrc from '../img/logo.png'
 import Image from 'next/image';
 import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
-import { app } from '../lib/firebase';
+import { app, db } from '../lib/firebase';
 import { useRouter } from 'next/router';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useAuthContext } from "../Components/context/AuthContext"
-
-//IDパスワード入力欄、ユーザー名入力欄、新規登録ボタン、ログインはこちら
-//機能→ユーザー登録
-//データ→メールアドレス、パスワード（半角英数八文字以上）、Googleアカウント
-//非ログインユーザーのみ
+import { addDoc, collection } from 'firebase/firestore';
 
 const SignUp = () => {
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
+  const [userName, setUserName] = useState('');
 
   const { user } = useAuthContext();
   const router = useRouter();
@@ -26,6 +23,13 @@ const SignUp = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await createUserWithEmailAndPassword(auth, userId, userPassword);
+    
+    const usersCollectionRef = collection(db, 'users');
+    const documentRef = await addDoc(usersCollectionRef,
+      {
+        name: userName,
+        mail: userPassword,
+      });
     router.push('/');
   }
 
@@ -38,6 +42,10 @@ const SignUp = () => {
   }
   const handleChangeUserPassword = (e: React.ChangeEvent<HTMLInputElement>) => {
     setUserPassword(e.target.value);
+  }
+
+  const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUserName(e.target.value);
   }
   return (
     <Container maxWidth='sm' sx={{ mt:10, mb:0, ml:'auto', mr: 'auto' }}>
@@ -81,6 +89,12 @@ const SignUp = () => {
         value={userPassword}
         type='password'
         onChange={handleChangeUserPassword}
+      />
+      <TextField
+        placeholder="ユーザー名"
+        value={userName}
+        type='text'
+        onChange={handleChangeUserName}
       />
       <Button 
         variant="contained" 

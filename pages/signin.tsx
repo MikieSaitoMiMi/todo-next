@@ -9,12 +9,7 @@ import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
 import { useAuthContext } from "../Components/context/AuthContext"
 
-//サービス名/ロゴ（フリーサイトから引っ張ってくる）、
-//ログインフォーム（IDPW入力欄・ログインボタン・Googleログインボタン）、新規ユーザー登録ボタン、ローダー
-//IDPWログイン、Googleログイン
-//データ→ユーザーID PW
 //非ログインユーザーのみ
-
 
 const Signin = () => {
   const [userId, setUserId] = useState('');

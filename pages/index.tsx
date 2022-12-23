@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
 import { Button } from '@mui/material';
 import Link from 'next/link';
+import LogOutButton from '../Components/LogoutButton';
 
 const Home: NextPage = () => {
   return (
@@ -10,6 +11,9 @@ const Home: NextPage = () => {
       <Link href="/todos/create"><Button variant="contained">create</Button></Link>
       <br />
       <Link href="/todos/[id]"><Button variant="contained">todoDetail（仮）</Button></Link>
+      <br />
+      <Link href="/todos/signin"><Button variant="contained">todoSignin</Button></Link>
+      <LogOutButton />
     </>
   )
 }
