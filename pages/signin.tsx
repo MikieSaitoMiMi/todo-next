@@ -3,7 +3,7 @@ import React, { useRef, useState } from 'react'
 import imageSrc from '../img/logo.png'
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { GoogleAuthProvider, getAuth, signInWithEmailAndPassword, signInWithRedirect } from 'firebase/auth';
 import { app } from '../lib/firebase';
 import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
@@ -25,9 +25,16 @@ const Signin = () => {
   const auth = getAuth(app);
   const isLoggedIn = !!user;
 
-  const handleSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+  const handleEmailLoginSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     await signInWithEmailAndPassword(auth, userId, userPassword);
+    router.push('/');
+  }
+
+  const handleGoogleLoginSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const provider = new GoogleAuthProvider();
+    await signInWithRedirect(auth, provider);
     router.push('/');
   }
 
@@ -86,9 +93,16 @@ const Signin = () => {
       <Button 
         variant="contained" 
         fullWidth
-        onClick={handleSubmit}
+        onClick={handleEmailLoginSubmit}
       >
         ログイン
+      </Button>
+      <Button 
+        variant="contained" 
+        fullWidth
+        onClick={handleGoogleLoginSubmit}
+      >
+        Googleでログイン
       </Button>
       <NextLink href='/signup'>
         <MuiLink
