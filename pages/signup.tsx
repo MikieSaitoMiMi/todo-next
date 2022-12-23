@@ -28,7 +28,7 @@ const SignUp = () => {
     const documentRef = await addDoc(usersCollectionRef,
       {
         name: userName,
-        mail: userPassword,
+        mail: userId,
       });
     router.push('/');
   }
