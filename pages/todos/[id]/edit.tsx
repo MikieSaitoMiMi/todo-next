@@ -4,7 +4,6 @@ import Header from '../../../Components/Header'
 
 //Todoフォーム（タイトル・期限・ステータス）、保存ボタン
 //Todo編集
-//ログインユーザーのみ
 
 const edit = () => {
   return (

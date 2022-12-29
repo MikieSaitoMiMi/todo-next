@@ -1,6 +1,5 @@
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { Box } from '@mui/system';
-import { DataGrid } from '@mui/x-data-grid'
 import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
 import React from 'react'

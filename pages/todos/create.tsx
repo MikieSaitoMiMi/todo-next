@@ -6,19 +6,25 @@ import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil'
 import Header from '../../Components/Header'
 import { todoListState } from '../../Components/store/Atom'
-
-
-//ログインユーザーのみ　未完了
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { db } from '../../lib/firebase';
+import { uuidv4 } from '@firebase/util';
 
 const Create = () => {
+  //Form用
   const [todoTitle, setTodoTitle] = useState('');
   const [todoDetail, setTodoDetail] = useState('');
+  //todoステータス
   const [todoStatus, setTodoStatus] = useState('未完了' || '途中' || '完了');
 
+  //エラーフラグ
   const [emptyErrFlg, setEmptyErrFlg] = useState(false);
 
+  //todos
   const [todoList, setTodoList] = useRecoilState(todoListState);
 
+  //Firebase用ID
+  const docId = uuidv4();
 
   useEffect(() => {
     if(todoTitle === '' && todoDetail === ''){
@@ -29,8 +35,8 @@ const Create = () => {
     }
   }, [emptyErrFlg, todoDetail, todoTitle])
 
-  const addTodo = () => {
-    if(emptyErrFlg !== true){
+  const addTodo = async() => {
+    if(emptyErrFlg) return;
       setTodoList((todo) => [
         ...todo,
         {
@@ -38,8 +44,13 @@ const Create = () => {
           title: todoTitle,
           detail: todoDetail,
           status: todoStatus,
+          createdAt: serverTimestamp(),
+          updateAt: serverTimestamp(),
         },
       ]);
+      const docRef = doc(db, 'todos', docId);
+      
+      await setDoc(docRef, todoList);
       //入力がない場合は初期化処理は不要なので省く
       if(todoTitle !== ''){
         setTodoTitle('');
@@ -48,7 +59,6 @@ const Create = () => {
         setTodoDetail('');
       }
       setTodoStatus('');
-    }
   };
 
   return (
