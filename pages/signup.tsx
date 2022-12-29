@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useAuthContext } from "../Components/context/AuthContext"
 import { addDoc, collection, getDocs} from 'firebase/firestore';
+import { FirebaseError } from 'firebase/app';
 
 const SignUp = () => {
   //フォーム用
@@ -40,9 +41,7 @@ const SignUp = () => {
     const usersCollectionRef = collection(db, 'users');
     //バリデーション用
     const idValidation = /^[a-zA-Z0-9_.+-]+@([a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9]*\.)+[a-zA-Z]{2,}$/;
-    getDocs(usersData).then((snapShot) => {
-      setUsers(snapShot.docs.map((doc) => ({ ...doc.data()})));
-    })
+
     //パスワードが空の場合はエラー
     if(userPassword === ''){
       setNoPasswordErrFlg(true);
@@ -73,14 +72,7 @@ const SignUp = () => {
       }
       setNoUserIdErrFlg(false);
     }
-    users.map((user) =>{
-      //IDが登録済みのアドレスの場合はエラー
-      if(user.id === userId){
-        setUserIdDupeErrFlg(true);
-      } else {
-        setUserIdDupeErrFlg(false);
-      }
-    })
+    FirebaseError
     if(
       !noUserNameErrFlg ||
       !passwordLengthErrFlg ||
@@ -89,7 +81,20 @@ const SignUp = () => {
       !noUserIdErrFlg ||
       !userIdIllegalErrFlg
     ){
-      await createUserWithEmailAndPassword(auth, userId, userPassword);
+      try{
+
+      await createUserWithEmailAndPassword(auth, userId, userPassword)
+      } catch (err:any) {
+          if(err.toString() === 
+              'FirebaseError: Firebase: Error (auth/email-already-in-use).'){
+            setUserIdDupeErrFlg(true);
+            return;
+          }
+          else{
+            console.log(err);
+            setUserIdDupeErrFlg(false);
+          }
+        }
     
       const documentRef = await addDoc(usersCollectionRef,
         {
