@@ -1,5 +1,5 @@
 import { Alert, Box, Button, Container, Snackbar, Stack, TextField } from '@mui/material';
-import React, { useEffect, useState } from 'react'
+import React, {  useState } from 'react'
 import imageSrc from '../img/logo.png'
 import Image from 'next/image';
 import NextLink from 'next/link';
@@ -8,7 +8,7 @@ import { app, db } from '../lib/firebase';
 import { useRouter } from 'next/router';
 import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth';
 import { useAuthContext } from "../Components/context/AuthContext"
-import { addDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { addDoc, collection, getDocs} from 'firebase/firestore';
 
 const SignUp = () => {
   //フォーム用
@@ -62,7 +62,6 @@ const SignUp = () => {
       setNoUserNameErrFlg(false);
     }
     //IDが空の場合はエラー
-    idValidation.test(userId);
     if(userId === ''){
       setNoUserIdErrFlg(true);
     }else{
