@@ -9,11 +9,14 @@ import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
 import { useAuthContext } from "../Components/context/AuthContext"
 
-//非ログインユーザーのみ
-
 const Signin = () => {
   const [userId, setUserId] = useState('');
   const [userPassword, setUserPassword] = useState('');
+
+  const [notUserErrFlg, setNotUserErrFlg] = useState(false);
+  const [userIdIllegalErrFlg, setUserIdIllegalErrFlg] = useState(false);
+  const [userPasswordIllegalErrFlg, setUserPasswordIllegalErrFlg] = useState(false);
+  const [internalErrorFlg, setInternalErrorFlg] = useState(false);
 
   const { user } = useAuthContext();
   const router = useRouter();
@@ -22,7 +25,39 @@ const Signin = () => {
 
   const handleEmailLoginSubmit = async (e: React.FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await signInWithEmailAndPassword(auth, userId, userPassword);
+    try{
+      await signInWithEmailAndPassword(auth, userId, userPassword);
+    } catch (err:any) {
+      console.log(err);
+      if(err.toString() === 
+          'FirebaseError: Firebase: Error (auth/invalid-email).'){
+            setUserIdIllegalErrFlg(true);
+        return;
+      }else{
+        setUserIdIllegalErrFlg(false);
+      }
+      if(err.toString() ===
+        'FirebaseError: Firebase: Error (auth/user-not-found).'){
+          setNotUserErrFlg(true);
+          return;
+        }else{
+          setNotUserErrFlg(false);
+      }
+      if(err.toString() ===
+        'FirebaseError: Firebase: Error (auth/wrong-password).'){
+          setUserPasswordIllegalErrFlg(true);
+          return;
+        }else{
+          setUserPasswordIllegalErrFlg(false);
+      }
+      if(err.toString() ===
+        'FirebaseError: Firebase: Error (auth/internal-error).'){
+          setInternalErrorFlg(true);
+          return;
+        }else{
+          setInternalErrorFlg(false);
+        }
+    }
     router.push('/');
   }
 
@@ -85,6 +120,20 @@ const Signin = () => {
         type='password'
         onChange={handleChangeUserPassword}
       />
+      {notUserErrFlg ?
+        <Alert>ユーザーが存在しません</Alert>
+      :
+      userIdIllegalErrFlg ?
+        <Alert>正しいメールアドレスを入力してください</Alert>
+      :
+      userPasswordIllegalErrFlg ?
+        <Alert>正しいパスワードを入力してください</Alert>
+      :
+      internalErrorFlg ?
+        <Alert>メールアドレスとパスワードを入力してください</Alert>
+      :
+        <></>
+      }
       <Button 
         variant="contained" 
         fullWidth

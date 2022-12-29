@@ -72,7 +72,6 @@ const SignUp = () => {
       }
       setNoUserIdErrFlg(false);
     }
-    FirebaseError
     if(
       !noUserNameErrFlg ||
       !passwordLengthErrFlg ||
@@ -82,19 +81,17 @@ const SignUp = () => {
       !userIdIllegalErrFlg
     ){
       try{
-
-      await createUserWithEmailAndPassword(auth, userId, userPassword)
-      } catch (err:any) {
+        await createUserWithEmailAndPassword(auth, userId, userPassword)
+        } catch (err:any) {
           if(err.toString() === 
               'FirebaseError: Firebase: Error (auth/email-already-in-use).'){
             setUserIdDupeErrFlg(true);
             return;
-          }
-          else{
+          }else{
             console.log(err);
             setUserIdDupeErrFlg(false);
           }
-        }
+      }
     
       const documentRef = await addDoc(usersCollectionRef,
         {
