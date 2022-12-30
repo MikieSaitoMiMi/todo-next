@@ -1,11 +1,12 @@
 import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { Box } from '@mui/system';
-import NextLink from 'next/link';
-import MuiLink from "@mui/material/Link"
 import React from 'react'
 import { useRecoilValue } from 'recoil';
 import Header from '../Components/Header';
 import { todoListState } from '../Components/store/Atom';
+import NextLink from 'next/link';
+import MuiLink from "@mui/material/Link"
+import BuildIcon from '@mui/icons-material/Build';
 
 
 //Todo:ソート、フィルター TODO作成ボタン、Todo一覧（タイトル・ステータス）
@@ -27,6 +28,7 @@ const TodosPage = () => {
               <TableCell>タイトル</TableCell>
               <TableCell>内容</TableCell>
               <TableCell>ステータス</TableCell>
+              <TableCell>詳細</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -36,6 +38,19 @@ const TodosPage = () => {
                 <TableCell>{todo.title}</TableCell>
                 <TableCell>{todo.detail}</TableCell>
                 <TableCell>{todo.status}</TableCell>
+                <TableCell>
+                  {todo.id !== 0 ?
+                    <MuiLink>
+                      <NextLink
+                        href={`/todos/${encodeURIComponent(todo.id)}`}
+                      >
+                        詳細
+                      </NextLink>
+                  </MuiLink>
+                  :
+                    <>詳細</>
+                  }
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>

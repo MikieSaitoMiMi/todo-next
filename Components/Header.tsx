@@ -1,13 +1,11 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
 import Image from 'next/image';
 import imageSrc from '../img/logo.png';
 import { createTheme } from '@mui/material/styles';
 import { ThemeProvider } from '@emotion/react';
 import { Box } from '@mui/system';
+import { AppBar, Toolbar, Typography } from '@mui/material';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,7 +32,7 @@ const theme = createTheme({
 const Header = () => {
   const classes = useStyles();
   return (
-    <div className={classes.root}>
+    <Box className={classes.root}>
       <ThemeProvider theme={theme}>
         <AppBar color="primary">
           <Toolbar>
@@ -45,12 +43,17 @@ const Header = () => {
               display="flex"
               justifyContent="flex-end"
             >
-              <Image src={imageSrc} alt="logo" width="60" />
+              <Image 
+                src={imageSrc} 
+                alt="logo" 
+                width='60px' 
+                height='60px'
+              />
             </Box>
           </Toolbar>
         </AppBar>
       </ThemeProvider>
-    </div>
+    </Box>
   );
 }
 
