@@ -1,7 +1,7 @@
 import { atom } from 'recoil'
 
 export interface ItodoListState {
-  id:number;
+  id: number;
   title: string;
   detail: string;
   status: string;

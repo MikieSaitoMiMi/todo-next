@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
 const theme = createTheme({
   palette: {
     primary: {
-      main: "#57D1C9"
+      main: "#4d59ac"
     }
   },
 });
