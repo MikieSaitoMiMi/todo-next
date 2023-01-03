@@ -1,18 +1,14 @@
-import { Button, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel } from '@mui/material';
+import { Button, Checkbox, ListItemText, MenuItem, OutlinedInput, Select, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, SelectChangeEvent, FormControl, FormControlLabel } from '@mui/material';
 import { Box } from '@mui/system';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRecoilState, useRecoilValue } from 'recoil';
 import Header from '../Components/Header';
-import { todoListState } from '../Components/store/Atom';
+import { ItodoListState, todoListState } from '../Components/store/Atom';
 import NextLink from 'next/link';
 import MuiLink from "@mui/material/Link"
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { db } from '../lib/firebase';
 
-
-
-//Todo:ソート、フィルター TODO作成ボタン、Todo一覧（タイトル・ステータス）
-//機能→TODO詳細遷移、フィルター、ソート
-//データ（五十文字以内）、内容（百文字以内）、ステータス（完了、途中、未完了）
-//ログインユーザーのみ見れる
 
 const sortTasksId = (
   arr: {id: number, title: string, detail: string, status: any}[],
@@ -28,8 +24,15 @@ const sortTasksId = (
 const TodosPage = () => {
   const [todoList, setTodoList] = useRecoilState(todoListState);
   const todos = useRecoilValue(todoListState);
+  
+
+  //ソート用
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = useState<'id' | 'status'>('id');
+
+  //フィルター用
+  const [filter, setFilter] = useState('全て表示' || '未完了' || '途中' || '完了');
+  const [filterTodos, setFilterTodos] = useRecoilState(todoListState);
 
   const handleSort = (sortBy:'id' | 'status') => (
     e:React.MouseEvent
@@ -39,7 +42,19 @@ const TodosPage = () => {
     setOrderBy(sortBy);
     setOrder(newOrder);
     if(sortBy === 'id') setTodoList(sortTasksId(todoList.concat(), sortBy, newOrder));
-    if(sortBy === 'status') setTodoList(sortTasksStatus(todoList.concat(), sortBy, newOrder));
+  }
+
+  //モーダルで選択されたステータスのtodoのみを表示する
+  //コンソールログの時点で、ステータスが切り替わっていない
+  const filterHandler = async(e:SelectChangeEvent<string>) => {
+    setFilter(e.target.value);
+    todos.map((todo) => {
+      console.log(todo);
+      if(todo.status === filter && todo.id !== 0){
+        setFilterTodos([todo]);
+      }
+    })
+    console.log(filterTodos);
   }
 
   return (
@@ -69,7 +84,8 @@ const TodosPage = () => {
                   ステータス
                 </TableSortLabel>
               </TableCell>
-              <TableCell>詳細</TableCell>
+              <TableCell></TableCell>
+              <TableCell></TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -92,22 +108,66 @@ const TodosPage = () => {
                     <>詳細</>
                   }
                 </TableCell>
+                <TableCell>
+                  {todo.id !== 0 ?
+                    <MuiLink>
+                      <NextLink
+                        href={`/todos/${encodeURIComponent(todo.id)}/edit`}
+                      >
+                        編集
+                      </NextLink>
+                    </MuiLink>
+                  :
+                    <>編集</>
+                  }
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
-      <NextLink href="/todos/create">
-        <MuiLink
-          underline='none'
+        <Box
+          margin='10px'
         >
-          <Button variant="contained">
-            <Box>
-              新規Todo作成
-            </Box>
-          </Button>
-        </MuiLink>
-      </NextLink>
-      
+          <NextLink href="/todos/create">
+            <MuiLink
+              underline='none'
+              marginTop='10px'
+              marginRight='10px'
+            >
+              <Button variant="contained">
+                <Box>
+                  新規Todo作成
+                </Box>
+              </Button>
+            </MuiLink>
+          </NextLink>
+          <Select
+          multiline
+          value={filter}
+          onChange={filterHandler}
+          >
+            <MenuItem 
+              value={'全て表示'}
+            >
+              全て表示
+            </MenuItem>
+            <MenuItem 
+              value={'未完了'}
+            >
+              未完了
+            </MenuItem>
+            <MenuItem
+              value={'途中'}
+            >
+              途中
+            </MenuItem>
+            <MenuItem
+              value={'完了'}
+            >
+              完了
+            </MenuItem>
+          </Select>
+        </Box>
       </TableContainer>
     </>
   )
