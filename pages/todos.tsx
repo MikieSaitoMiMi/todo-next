@@ -25,10 +25,7 @@ import { useRouter } from "next/router";
 import {
   CollectionReference,
   FieldValue,
-  QuerySnapshot,
   collection,
-  doc,
-  getDocs,
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -55,6 +52,11 @@ const sortTasksId = (
 
 const TodosPage = () => {
   const todoList = useRecoilValue(todoListState);
+  const [todos, setTodos] = useState(todoList);
+  const todoData = collection(
+    db,
+    "todos"
+  ) as CollectionReference<ItodoListState>;
   const router = useRouter();
 
   //ソート用
@@ -77,14 +79,14 @@ const TodosPage = () => {
     setOrderBy(sortBy);
     setOrder(newOrder);
     if (sortBy === "id")
-      setFilterTodos(sortTasksId(todoList.concat(), sortBy, newOrder));
+      setFilterTodos(sortTasksId(todos.concat(), sortBy, newOrder));
   };
 
   //フィルター
   const filterHandler = async (filter: string) => {
-    const targetTodos = todoList.filter((todo) => todo.status === filter);
+    const targetTodos = todos.filter((todo) => todo.status === filter);
     if (filter === "全て表示") {
-      setFilterTodos(todoList);
+      setFilterTodos(todos);
     } else {
       setFilterTodos(targetTodos);
     }
@@ -92,14 +94,10 @@ const TodosPage = () => {
 
   //データ取得
   useEffect(() => {
-    const todoData = collection(
-      db,
-      "todos"
-    ) as CollectionReference<ItodoListState>;
     onSnapshot(todoData, (todo) => {
-      setFilterTodos(todo.docs.map((doc) => ({ ...doc.data() })));
+      setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
     });
-  }, []);
+  }, [todoData]);
 
   const editHandler = async (id: number, uuid: string) => {
     await setEditTarget({
