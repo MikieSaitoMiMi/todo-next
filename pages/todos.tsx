@@ -14,11 +14,7 @@ import { Box } from "@mui/system";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Header from "../Components/Header";
-import {
-  ItodoListState,
-  editTargetState,
-  todoListState,
-} from "../Components/store/Atom";
+import { ItodoListState, uuid, todoListState } from "../Components/store/Atom";
 import NextLink from "next/link";
 import MuiLink from "@mui/material/Link";
 import { useRouter } from "next/router";
@@ -70,7 +66,7 @@ const TodosPage = () => {
   const [filterTodos, setFilterTodos] = useState(todoList);
 
   //編集用
-  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
+  const [editUuid, setEditUuid] = useRecoilState(uuid);
 
   //ソート
   const handleSort = (sortBy: "id" | "status") => (e: React.MouseEvent) => {
@@ -100,10 +96,8 @@ const TodosPage = () => {
   }, [todoData]);
 
   const editHandler = async (id: number, uuid: string) => {
-    await setEditTarget({
-      id: id,
-      uuid: uuid,
-    });
+    console.log(uuid);
+    await setEditUuid(uuid);
     router.push({
       pathname: `/todos/${encodeURIComponent(id)}/edit`,
     });

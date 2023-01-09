@@ -26,10 +26,7 @@ export const todoListState = atom<ItodoListState[]>({
   ],
 });
 
-export const editTargetState = atom({
-  key: "editTarget",
-  default: {
-    id: 0,
-    uuid: "",
-  },
+export const uuid = atom({
+  key: "uuid",
+  default: "",
 });
