@@ -57,7 +57,7 @@ const TodosPage = () => {
 
   //ソート用
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [orderBy, setOrderBy] = useState<"id" | "status">("id");
+  const [sortFlag, setSortFlag] = useState(false);
 
   //フィルター用
   const [filter, setFilter] = useState(
@@ -69,13 +69,14 @@ const TodosPage = () => {
   const [editUuid, setEditUuid] = useRecoilState(uuid);
 
   //ソート
-  const handleSort = (sortBy: "id" | "status") => (e: React.MouseEvent) => {
-    const newOrder: "asc" | "desc" =
-      orderBy === sortBy ? (order === "asc" ? "desc" : "asc") : "asc";
-    setOrderBy(sortBy);
+  const handleSort = () => (e: React.MouseEvent) => {
+    const newOrder: "asc" | "desc" = order === "asc" ? "desc" : "asc";
     setOrder(newOrder);
-    if (sortBy === "id")
-      setFilterTodos(sortTasksId(todos.concat(), sortBy, newOrder));
+    if (filterTodos !== todoList) {
+      setFilterTodos(sortTasksId(todos.concat(), "id", newOrder));
+    } else {
+      setTodos(sortTasksId(todos.concat(), "id", newOrder));
+    }
   };
 
   //フィルター
@@ -90,9 +91,11 @@ const TodosPage = () => {
 
   //データ取得
   useEffect(() => {
-    onSnapshot(todoData, (todo) => {
-      setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
-    });
+    if (sortFlag === false) {
+      onSnapshot(todoData, (todo) => {
+        setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
+      });
+    }
   }, [todoData]);
 
   const editHandler = async (id: number, uuid: string) => {
@@ -111,24 +114,15 @@ const TodosPage = () => {
             <TableRow>
               <TableCell>
                 <TableSortLabel
-                  active={orderBy === "id"}
                   direction={order === "asc" ? "desc" : "asc"}
-                  onClick={handleSort("id")}
+                  onClick={handleSort()}
                 >
                   ID
                 </TableSortLabel>
               </TableCell>
               <TableCell>タイトル</TableCell>
               <TableCell>内容</TableCell>
-              <TableCell>
-                <TableSortLabel
-                  active={orderBy === "status"}
-                  direction={order === "asc" ? "desc" : "asc"}
-                  onClick={handleSort("status")}
-                >
-                  ステータス
-                </TableSortLabel>
-              </TableCell>
+              <TableCell>ステータス</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
             </TableRow>
