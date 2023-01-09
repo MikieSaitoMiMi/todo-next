@@ -17,40 +17,31 @@ import { editTargetState, todoListState } from "../../../Components/store/Atom";
 import NextLink from "next/link";
 import MuiLink from "@mui/material/Link";
 import { db } from "../../../lib/firebase";
-import {
-  Firestore,
-  collection,
-  doc,
-  getDocs,
-  query,
-  updateDoc,
-  where,
-} from "firebase/firestore";
+import { doc, updateDoc } from "firebase/firestore";
 
 //Todoフォーム（タイトル・期限・ステータス）、保存ボタン
 //Todo編集
 
 const Edit = () => {
+  //編集target
+  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
+
   //Form用
   const [todoTitle, setTodoTitle] = useState("");
   const [todoDetail, setTodoDetail] = useState("");
 
-  //編集target
-  const [editTarget, setEditTarget] = useRecoilState(editTargetState);
-
   //todoステータス
   const [todoStatus, setTodoStatus] = useState("未完了" || "途中" || "完了");
-  //todos
-  const [todoList, setTodoList] = useRecoilState(todoListState);
+
   const editTodo = async () => {
     //いずれかのフォームに入力があれば更新する
     if (todoTitle !== "" || todoDetail !== "" || todoStatus !== "") {
       const docRef = doc(db, "todos", editTarget.uuid);
-      const newTodo = {
+      await updateDoc(docRef, {
         title: todoTitle,
         detail: todoDetail,
         status: todoStatus,
-      };
+      });
     }
   };
 

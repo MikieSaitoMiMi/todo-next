@@ -11,14 +11,27 @@ import {
   TableSortLabel,
 } from "@mui/material";
 import { Box } from "@mui/system";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
 import Header from "../Components/Header";
-import { editTargetState, todoListState } from "../Components/store/Atom";
+import {
+  ItodoListState,
+  editTargetState,
+  todoListState,
+} from "../Components/store/Atom";
 import NextLink from "next/link";
 import MuiLink from "@mui/material/Link";
 import { useRouter } from "next/router";
-import { FieldValue } from "firebase/firestore";
+import {
+  CollectionReference,
+  FieldValue,
+  QuerySnapshot,
+  collection,
+  doc,
+  getDocs,
+  onSnapshot,
+} from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 const sortTasksId = (
   arr: {
@@ -57,6 +70,7 @@ const TodosPage = () => {
   //編集用
   const [editTarget, setEditTarget] = useRecoilState(editTargetState);
 
+  //ソート
   const handleSort = (sortBy: "id" | "status") => (e: React.MouseEvent) => {
     const newOrder: "asc" | "desc" =
       orderBy === sortBy ? (order === "asc" ? "desc" : "asc") : "asc";
@@ -66,6 +80,7 @@ const TodosPage = () => {
       setFilterTodos(sortTasksId(todoList.concat(), sortBy, newOrder));
   };
 
+  //フィルター
   const filterHandler = async (filter: string) => {
     const targetTodos = todoList.filter((todo) => todo.status === filter);
     if (filter === "全て表示") {
@@ -74,6 +89,17 @@ const TodosPage = () => {
       setFilterTodos(targetTodos);
     }
   };
+
+  //データ取得
+  useEffect(() => {
+    const todoData = collection(
+      db,
+      "todos"
+    ) as CollectionReference<ItodoListState>;
+    onSnapshot(todoData, (todo) => {
+      setFilterTodos(todo.docs.map((doc) => ({ ...doc.data() })));
+    });
+  }, []);
 
   const editHandler = async (id: number, uuid: string) => {
     await setEditTarget({
@@ -136,7 +162,6 @@ const TodosPage = () => {
                 </TableCell>
                 <TableCell>
                   {todo.id !== 0 ? (
-                    // href={`/todos/${encodeURIComponent(todo.id)}/edit`}
                     <Button onClick={(e) => editHandler(todo.id, todo.uuid)}>
                       編集
                     </Button>
