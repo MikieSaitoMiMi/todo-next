@@ -96,7 +96,6 @@ const TodosPage = () => {
   }, [todoData]);
 
   const editHandler = async (id: number, uuid: string) => {
-    console.log(uuid);
     await setEditUuid(uuid);
     router.push({
       pathname: `/todos/${encodeURIComponent(id)}/edit`,
@@ -135,34 +134,71 @@ const TodosPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {filterTodos.map((todo) => (
-              <TableRow key={todo.id}>
-                <TableCell>{todo.id}</TableCell>
-                <TableCell>{todo.title}</TableCell>
-                <TableCell>{todo.detail}</TableCell>
-                <TableCell>{todo.status}</TableCell>
-                <TableCell>
-                  {todo.id !== 0 ? (
-                    <MuiLink>
-                      <NextLink href={`/todos/${encodeURIComponent(todo.id)}`}>
+            {filter === "全て表示"
+              ? todos.map((todo) => (
+                  <TableRow key={todo.id}>
+                    <TableCell>{todo.id}</TableCell>
+                    <TableCell>{todo.title}</TableCell>
+                    <TableCell>{todo.detail}</TableCell>
+                    <TableCell>{todo.status}</TableCell>
+                    <TableCell>
+                      {todo.id !== 0 ? (
+                        <MuiLink>
+                          <NextLink
+                            href={`/todos/${encodeURIComponent(todo.id)}`}
+                          >
+                            <Button>詳細</Button>
+                          </NextLink>
+                        </MuiLink>
+                      ) : (
                         <Button>詳細</Button>
-                      </NextLink>
-                    </MuiLink>
-                  ) : (
-                    <Button>詳細</Button>
-                  )}
-                </TableCell>
-                <TableCell>
-                  {todo.id !== 0 ? (
-                    <Button onClick={(e) => editHandler(todo.id, todo.uuid)}>
-                      編集
-                    </Button>
-                  ) : (
-                    <Button>編集</Button>
-                  )}
-                </TableCell>
-              </TableRow>
-            ))}
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {todo.id !== 0 ? (
+                        <Button
+                          onClick={(e) => editHandler(todo.id, todo.uuid)}
+                        >
+                          編集
+                        </Button>
+                      ) : (
+                        <Button>編集</Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))
+              : filterTodos.map((todo) => (
+                  <TableRow key={todo.id}>
+                    <TableCell>{todo.id}</TableCell>
+                    <TableCell>{todo.title}</TableCell>
+                    <TableCell>{todo.detail}</TableCell>
+                    <TableCell>{todo.status}</TableCell>
+                    <TableCell>
+                      {todo.id !== 0 ? (
+                        <MuiLink>
+                          <NextLink
+                            href={`/todos/${encodeURIComponent(todo.id)}`}
+                          >
+                            <Button>詳細</Button>
+                          </NextLink>
+                        </MuiLink>
+                      ) : (
+                        <Button>詳細</Button>
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {todo.id !== 0 ? (
+                        <Button
+                          onClick={(e) => editHandler(todo.id, todo.uuid)}
+                        >
+                          編集
+                        </Button>
+                      ) : (
+                        <Button>編集</Button>
+                      )}
+                    </TableCell>
+                  </TableRow>
+                ))}
           </TableBody>
         </Table>
         <Box margin="10px">
