@@ -20,31 +20,12 @@ import MuiLink from "@mui/material/Link";
 import { useRouter } from "next/router";
 import {
   CollectionReference,
-  FieldValue,
   collection,
   onSnapshot,
+  orderBy,
+  query,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
-
-const sortTasksId = (
-  arr: {
-    id: number;
-    title: string;
-    detail: string;
-    uuid: string;
-    createdAt: FieldValue;
-    updateAt: FieldValue;
-    status: any;
-  }[],
-  sortBy: "id",
-  order: "asc" | "desc"
-) =>
-  arr.sort(
-    (
-      a: { id: number; title: string; detail: string; status: any },
-      b: { id: number; title: string; detail: string; status: any }
-    ) => (order === "asc" ? a[sortBy] - b[sortBy] : b[sortBy] - a[sortBy])
-  );
 
 const TodosPage = () => {
   const todoList = useRecoilValue(todoListState);
@@ -57,7 +38,6 @@ const TodosPage = () => {
 
   //ソート用
   const [order, setOrder] = useState<"asc" | "desc">("asc");
-  const [sortFlag, setSortFlag] = useState(false);
 
   //フィルター用
   const [filter, setFilter] = useState(
@@ -70,13 +50,17 @@ const TodosPage = () => {
 
   //ソート
   const handleSort = () => (e: React.MouseEvent) => {
-    const newOrder: "asc" | "desc" = order === "asc" ? "desc" : "asc";
-    setOrder(newOrder);
-    if (filterTodos !== todoList) {
-      setFilterTodos(sortTasksId(todos.concat(), "id", newOrder));
+    let q;
+    if (order === "asc") {
+      q = query(todoData, orderBy("id"));
+      setOrder("desc");
     } else {
-      setTodos(sortTasksId(todos.concat(), "id", newOrder));
+      q = query(todoData, orderBy("id", "desc"));
+      setOrder("asc");
     }
+    const unsub = onSnapshot(q, (querySnapshot) => {
+      setTodos(querySnapshot.docs.map((doc) => ({ ...doc.data() })));
+    });
   };
 
   //フィルター
@@ -91,15 +75,14 @@ const TodosPage = () => {
 
   //データ取得
   useEffect(() => {
-    if (sortFlag === false) {
-      onSnapshot(todoData, (todo) => {
-        setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
-      });
-    }
+    onSnapshot(todoData, (todo) => {
+      setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
+    });
   }, [todoData]);
 
   const editHandler = async (id: number, uuid: string) => {
     await setEditUuid(uuid);
+    setFilter("全て表示");
     router.push({
       pathname: `/todos/${encodeURIComponent(id)}/edit`,
     });
