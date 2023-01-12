@@ -9,7 +9,6 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableSortLabel,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useRecoilState, useRecoilValue } from "recoil";
@@ -22,13 +21,11 @@ import {
   CollectionReference,
   collection,
   onSnapshot,
-  orderBy,
-  query,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
 
 const TodosPage = () => {
-  const todoList = useRecoilValue(todoListState);
+  const [todoList, setTodoList] = useRecoilState(todoListState);
   const [todos, setTodos] = useState(todoList);
   const todoData = collection(
     db,
@@ -36,32 +33,15 @@ const TodosPage = () => {
   ) as CollectionReference<ItodoListState>;
   const router = useRouter();
 
-  //ソート用
-  const [order, setOrder] = useState<"asc" | "desc">("asc");
-
   //フィルター用
   const [filter, setFilter] = useState(
     "全て表示" || "未完了" || "途中" || "完了"
   );
+
   const [filterTodos, setFilterTodos] = useState(todoList);
 
   //編集用
   const [editUuid, setEditUuid] = useRecoilState(uuid);
-
-  //ソート
-  const handleSort = () => (e: React.MouseEvent) => {
-    let q;
-    if (order === "asc") {
-      q = query(todoData, orderBy("id"));
-      setOrder("desc");
-    } else {
-      q = query(todoData, orderBy("id", "desc"));
-      setOrder("asc");
-    }
-    const unsub = onSnapshot(q, (querySnapshot) => {
-      setTodos(querySnapshot.docs.map((doc) => ({ ...doc.data() })));
-    });
-  };
 
   //フィルター
   const filterHandler = async (filter: string) => {
@@ -78,7 +58,11 @@ const TodosPage = () => {
     onSnapshot(todoData, (todo) => {
       setTodos(todo.docs.map((doc) => ({ ...doc.data() })));
     });
-  }, [todoData]);
+    onSnapshot(todoData, (todo) => {
+      setTodoList(todo.docs.map((doc) => ({ ...doc.data() })));
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const editHandler = async (id: number, uuid: string) => {
     await setEditUuid(uuid);
@@ -95,14 +79,7 @@ const TodosPage = () => {
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>
-                <TableSortLabel
-                  direction={order === "asc" ? "desc" : "asc"}
-                  onClick={handleSort()}
-                >
-                  ID
-                </TableSortLabel>
-              </TableCell>
+              <TableCell>ID</TableCell>
               <TableCell>タイトル</TableCell>
               <TableCell>内容</TableCell>
               <TableCell>ステータス</TableCell>

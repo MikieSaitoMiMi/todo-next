@@ -47,7 +47,7 @@ const Create = () => {
   const addTodo = async () => {
     if (emptyErrFlg) return;
     const newTodo = {
-      id: todoList.length,
+      id: todoList.length + 1,
       uuid: docId,
       title: todoTitle,
       detail: todoDetail,
