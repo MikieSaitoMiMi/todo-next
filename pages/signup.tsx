@@ -103,12 +103,12 @@ const SignUp = () => {
         mail: userId,
         password: userPassword,
       });
-      router.push("/");
+      router.push("/todos");
     }
   };
 
   const handleClose = async () => {
-    await router.push("/");
+    await router.push("/todos");
   };
 
   const handleChangeUserId = (e: React.ChangeEvent<HTMLInputElement>) => {

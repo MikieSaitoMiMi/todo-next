@@ -20,6 +20,8 @@ import { useRouter } from "next/router";
 import {
   CollectionReference,
   collection,
+  deleteDoc,
+  doc,
   onSnapshot,
 } from "firebase/firestore";
 import { db } from "../lib/firebase";
@@ -41,7 +43,7 @@ const TodosPage = () => {
   const [filterTodos, setFilterTodos] = useState(todoList);
 
   //編集用
-  const [editUuid, setEditUuid] = useRecoilState(uuid);
+  const [targetUuid, setTargetUuid] = useRecoilState(uuid);
 
   //フィルター
   const filterHandler = async (filter: string) => {
@@ -65,15 +67,16 @@ const TodosPage = () => {
   }, []);
 
   const editHandler = async (id: number, uuid: string) => {
-    await setEditUuid(uuid);
+    await setTargetUuid(uuid);
     setFilter("全て表示");
     router.push({
       pathname: `/todos/${encodeURIComponent(id)}/edit`,
     });
   };
 
-  const deleteHandler = async (id: number, uuid: string) => {
-    await setEditUuid(uuid);
+  const deleteHandler = async (uuid: string) => {
+    await setTargetUuid(uuid);
+    await deleteDoc(doc(db, "todos", uuid));
   };
 
   return (
@@ -101,9 +104,7 @@ const TodosPage = () => {
                     <TableCell>{todo.status}</TableCell>
                     <TableCell>
                       {todo.id !== 0 ? (
-                        <Button
-                          onClick={(e) => deleteHandler(todo.id, todo.uuid)}
-                        >
+                        <Button onClick={(e) => deleteHandler(todo.uuid)}>
                           削除
                         </Button>
                       ) : (
@@ -131,9 +132,7 @@ const TodosPage = () => {
                     <TableCell>{todo.status}</TableCell>
                     <TableCell>
                       {todo.id !== 0 ? (
-                        <Button
-                          onClick={(e) => deleteHandler(todo.id, todo.uuid)}
-                        >
+                        <Button onClick={(e) => deleteHandler(todo.uuid)}>
                           削除
                         </Button>
                       ) : (
