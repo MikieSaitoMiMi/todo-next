@@ -72,6 +72,10 @@ const TodosPage = () => {
     });
   };
 
+  const deleteHandler = async (id: number, uuid: string) => {
+    await setEditUuid(uuid);
+  };
+
   return (
     <>
       <Header />
@@ -97,13 +101,11 @@ const TodosPage = () => {
                     <TableCell>{todo.status}</TableCell>
                     <TableCell>
                       {todo.id !== 0 ? (
-                        <MuiLink>
-                          <NextLink
-                            href={`/todos/${encodeURIComponent(todo.id)}`}
-                          >
-                            <Button>詳細</Button>
-                          </NextLink>
-                        </MuiLink>
+                        <Button
+                          onClick={(e) => deleteHandler(todo.id, todo.uuid)}
+                        >
+                          削除
+                        </Button>
                       ) : (
                         <Button>詳細</Button>
                       )}
@@ -129,13 +131,11 @@ const TodosPage = () => {
                     <TableCell>{todo.status}</TableCell>
                     <TableCell>
                       {todo.id !== 0 ? (
-                        <MuiLink>
-                          <NextLink
-                            href={`/todos/${encodeURIComponent(todo.id)}`}
-                          >
-                            <Button>詳細</Button>
-                          </NextLink>
-                        </MuiLink>
+                        <Button
+                          onClick={(e) => deleteHandler(todo.id, todo.uuid)}
+                        >
+                          削除
+                        </Button>
                       ) : (
                         <Button>詳細</Button>
                       )}
